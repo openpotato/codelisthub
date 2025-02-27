@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CodeListHub.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "initdb --import"
+    }
+  }
+}
