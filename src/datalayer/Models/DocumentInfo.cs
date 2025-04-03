@@ -40,14 +40,14 @@ namespace CodeListHub.DataLayer
         /// Canonical URI which uniquely identifies all versions this document (collectively)
         /// </summary>
         [Comment("Canonical URI which uniquely identifies all versions this document (collectively)")]
-        public Uri CanonicalUri { get; set; }
+        public string CanonicalUri { get; set; }
 
         /// <summary>
         /// Canonical URI which uniquely identifies this document
         /// </summary>
         [Required]
         [Comment("Canonical URI which uniquely identifies this document")]
-        public Uri CanonicalVersionUri { get; set; }
+        public string CanonicalVersionUri { get; set; }
 
         /// <summary>
         /// The document type

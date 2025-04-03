@@ -24,7 +24,6 @@ using CodeListHub.DataLayer;
 using CodeListHub.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Swashbuckle.AspNetCore.Annotations;
@@ -72,7 +71,7 @@ namespace CodeListHub
             // Get list of documents with given canonicalVersionUri
             var documentInfoList = await _dbContext.Set<DocumentInfo>()
                 .Include(x => x.Files)
-                .Where(x => x.CanonicalUri == canonicalUri || x.CanonicalVersionUri == canonicalUri)
+                .Where(x => x.CanonicalUri == canonicalUri.ToString() || x.CanonicalVersionUri == canonicalUri.ToString())
                 .OrderByDescending(x => x.Version)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
@@ -145,7 +144,7 @@ namespace CodeListHub
             // Get list of documents with given canonicalVersionUri
             var documentInfoList = await _dbContext.Set<DocumentInfo>()
                 .Include(x => x.Files)
-                .Where(x => x.CanonicalUri == canonicalUri || x.CanonicalVersionUri == canonicalUri)
+                .Where(x => x.CanonicalUri == canonicalUri.ToString() || x.CanonicalVersionUri == canonicalUri.ToString())
                 .OrderByDescending(x => x.Version)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
@@ -250,7 +249,9 @@ namespace CodeListHub
                         Regex.IsMatch(x.ShortName, searchTerm, RegexOptions.IgnoreCase) ||
                         Regex.IsMatch(x.LongName, searchTerm, RegexOptions.IgnoreCase) ||
                         Regex.IsMatch(x.Publisher.ShortName, searchTerm, RegexOptions.IgnoreCase) ||
-                        Regex.IsMatch(x.Publisher.LongName, searchTerm, RegexOptions.IgnoreCase)
+                        Regex.IsMatch(x.Publisher.LongName, searchTerm, RegexOptions.IgnoreCase) ||
+                        Regex.IsMatch(x.CanonicalUri, searchTerm, RegexOptions.IgnoreCase) ||
+                        Regex.IsMatch(x.CanonicalVersionUri, searchTerm, RegexOptions.IgnoreCase)
                     )
                     .Where(x => string.IsNullOrEmpty(language) || x.Language == language)
                     .Where(x => type == null || x.DocumentType == (DataLayer.DocumentType)type)
