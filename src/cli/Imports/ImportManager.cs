@@ -163,18 +163,26 @@ namespace CodeListHub.CLI
 
             foreach (var oclFile in oclfolder.GetFiles("*.ocl"))
             {
-                var oclDocument = await DocumentLoader.LoadAsync(oclFile, cancellationToken);
-
-                if (oclDocument is CodeListDocument codeListDocument)
+                try
                 {
-                    await ImportDocument(dbContext, codeListDocument, oclFile.FullName, cancellationToken);
+                    var oclDocument = await DocumentLoader.LoadAsync(oclFile, cancellationToken);
+
+                    if (oclDocument is CodeListDocument codeListDocument)
+                    {
+                        await ImportDocument(dbContext, codeListDocument, oclFile.FullName, cancellationToken);
+                    }
+                    else if (oclDocument is CodeListSetDocument codeListSetDocument)
+                    {
+                        await ImportDocument(dbContext, codeListSetDocument, oclFile.FullName, cancellationToken);
+                    }
+
+                    _consoleWriter.ContinueProgress(++fileCount);
                 }
-                else if (oclDocument is CodeListSetDocument codeListSetDocument)
+                catch (Exception ex)
                 {
-                    await ImportDocument(dbContext, codeListSetDocument, oclFile.FullName, cancellationToken);
+                    throw;
                 }
 
-                _consoleWriter.ContinueProgress(++fileCount);
             }
 
             _consoleWriter.FinishProgress(fileCount);
@@ -200,8 +208,8 @@ namespace CodeListHub.CLI
                 Language = oclDocument.Identification.Language,
                 ShortName = oclDocument.Identification.ShortName,
                 LongName = oclDocument.Identification.LongName,
-                CanonicalUri = oclDocument.Identification.CanonicalUri,
-                CanonicalVersionUri = oclDocument.Identification.CanonicalVersionUri,
+                CanonicalUri = oclDocument.Identification.CanonicalUri.ToString(),
+                CanonicalVersionUri = oclDocument.Identification.CanonicalVersionUri.ToString(),
                 Version = oclDocument.Identification.Version,
                 Tags = await GetTags(dbContext, oclDocument, cancellationToken),
                 PublishedAt = oclDocument.Identification.PublishedAt?.ToUniversalTime(),

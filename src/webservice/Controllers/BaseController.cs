@@ -19,9 +19,8 @@
  */
 #endregion
 
-using Microsoft.AspNetCore.Mvc;
 using CodeListHub.DataLayer;
-using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CodeListHub
 {
